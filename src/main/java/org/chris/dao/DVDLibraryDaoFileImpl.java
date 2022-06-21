@@ -1,5 +1,6 @@
 package org.chris.dao;
 
+import org.chris.dto.Actor;
 import org.chris.dto.DVD;
 
 import java.io.*;
@@ -38,10 +39,17 @@ public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
         out.close();
     }
 
+    //Data Structure to File
     private String marshallDvd(DVD aDvd)
     {
-
-        return String.format("%s%s%s%s%s%s%s%s%s%s%s%s%s",
+        StringBuilder actors = new StringBuilder();
+        for (Actor actor : aDvd.getActors()) {
+            actors.append(actor.getName());
+            actors.append(",");
+        }
+        //handle comma for last actor
+        actors.deleteCharAt(actors.lastIndexOf(","));
+        return String.format("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
                 aDvd.getDvdId(),
                 DELIMITER,
                 aDvd.getTitle(),
@@ -54,7 +62,11 @@ public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
                 DELIMITER,
                 aDvd.getStudio(),
                 DELIMITER,
-                aDvd.getUserRating());
+                aDvd.getUserRating(),
+                DELIMITER,
+                actors
+
+        );
     }
 
 
@@ -93,10 +105,11 @@ public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
         scanner.close();
     }
 
+    //File to Data Structure
     private DVD unmarshallDvd(String dvdAsText)
     {
 
-        // Given the pattern "0001::Die Hard::1989/12/21::18::John McTiernan::Universal::A+"
+        // Given the pattern "0001::Die Hard::1989/12/21::18::John McTiernan::Universal::A+::actor/s"
         String[] dvdTokens = dvdAsText.split(DELIMITER);
 
 
@@ -106,7 +119,7 @@ public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
         DVD dvdFromFile = new DVD(dvdId);
 
         // Index 1 - title
-       dvdFromFile.setTitle(dvdTokens[1]);
+        dvdFromFile.setTitle(dvdTokens[1]);
 
         // Index 2 - release date
         dvdFromFile.setReleaseDate(dvdTokens[2]);
@@ -122,6 +135,16 @@ public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
 
         // Index 6 - user rating
         dvdFromFile.setUserRating(dvdTokens[6]);
+
+        //actors
+        if (dvdTokens.length > 7) {
+            String[] actorTokens = dvdTokens[7].split(",");
+            for (String actor : actorTokens) {
+                dvdFromFile.getActors().add(new Actor(actor));
+            }
+
+        }
+
 
         return dvdFromFile;
     }
@@ -157,7 +180,6 @@ public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
         writeLibrary();
         return removedDvd;
     }
-
 
 
     @Override

@@ -54,8 +54,7 @@ public class DVDLibraryController {
         DVD dvdToEdit = dao.getDvd(dvdId);
         DVD editedDvd = view.getEditDetails(dvdToEdit);
         dao.updateDvd(dvdId, editedDvd);
-
-
+        view.displayEditSuccessBanner();
 
     }
 

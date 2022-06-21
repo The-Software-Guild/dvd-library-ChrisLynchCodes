@@ -1,5 +1,8 @@
 package org.chris.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DVD {
 
     private final String dvdId;
@@ -11,11 +14,28 @@ public class DVD {
     private String userRating;
 
 
+
+    private List<Actor> actors;
+
+
     public DVD(String dvdId)
     {
         this.dvdId = dvdId;
+        actors = new ArrayList<>();
     }
 
+
+
+
+    public List<Actor> getActors()
+    {
+        return actors;
+    }
+
+    public void setActors(List<Actor> actors)
+    {
+        this.actors = actors;
+    }
     public String getDvdId()
     {
         return dvdId;

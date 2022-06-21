@@ -1,5 +1,6 @@
 package org.chris.ui;
 
+import org.chris.dto.Actor;
 import org.chris.dto.DVD;
 
 import java.util.List;
@@ -36,7 +37,6 @@ public class DVDLibraryView {
 
     public DVD getEditDetails(DVD dvd)
     {
-        //Write ternary
         dvd.setTitle(io.readString("Please enter new DVD title"));
         dvd.setMpaaRating(io.readString("Please enter new MPAA Rating"));
         dvd.setDirectorsName(io.readString("Please enter new directors name"));
@@ -48,25 +48,32 @@ public class DVDLibraryView {
 
     public DVD getNewDvdInfo()
     {
-        String title = io.readString("Please enter DVD title");
-        String mPAARating = io.readString("Please enter MPAA Rating");
-        String directorsName = io.readString("Please enter directors name");
-        String studio = io.readString("Please enter studio name");
-        String userRating = io.readString("Please enter user rating");
         DVD currentDVD = new DVD(UUID.randomUUID().toString());
-        currentDVD.setTitle(title);
-        currentDVD.setMpaaRating("18");
-        currentDVD.setDirectorsName("Steve Spielberg");
-        currentDVD.setStudio("WB");
-        currentDVD.setUserRating("Good Movie");
-        currentDVD.setReleaseDate("22/06/23");
+        currentDVD.setTitle(io.readString("Please enter DVD title"));
+        currentDVD.setMpaaRating(io.readString("Please enter MPAA Rating"));
+        currentDVD.setDirectorsName(io.readString("Please enter directors name"));
+        currentDVD.setStudio(io.readString("Please enter studio name"));
+        currentDVD.setUserRating(io.readString("Please enter user rating"));
+        currentDVD.setReleaseDate(io.readString("Please enter release date"));
+
+
+        boolean continueAddingActors = true;
+        while (continueAddingActors) {
+            currentDVD.getActors().add(new Actor(io.readString("Enter an actor name")));
+
+            //if they do not enter Y then stop asking
+            if (!io.readString("Enter another actor? [Y]/[N]").equalsIgnoreCase("Y"))
+                continueAddingActors = false;
+        }
         return currentDVD;
     }
 
     public void displayDvdList(List<DVD> dvdList)
     {
         for (DVD currentDvd : dvdList) {
-            String dvdInfo = String.format("ID-%s%n%s : %s %s : %s -- %s - %s%n",
+
+            //using string.format
+             String initialDvdInfo = String.format("ID-%s%nTitle:%s - Release Date:%s - Rating:%s\nDirector:%s - Studio:%s - User Rating:%s%nActors:",
                     currentDvd.getDvdId(),
                     currentDvd.getTitle(),
                     currentDvd.getReleaseDate(),
@@ -74,7 +81,16 @@ public class DVDLibraryView {
                     currentDvd.getDirectorsName(),
                     currentDvd.getStudio(),
                     currentDvd.getUserRating());
-            io.print(dvdInfo);
+
+
+            List<Actor> actors = currentDvd.getActors();
+            StringBuilder dvdInfo = new StringBuilder(initialDvdInfo);
+
+            for (Actor actor : actors) {
+                dvdInfo.append("-");
+                dvdInfo.append(actor.getName());
+            }
+            io.print(dvdInfo.toString());
         }
         io.readString("Please hit enter to continue.");
     }
