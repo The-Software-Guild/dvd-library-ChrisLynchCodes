@@ -1,23 +1,25 @@
 package org.chris;
 
 import org.chris.controller.DVDLibraryController;
-import org.chris.dao.DVDLibraryDao;
-import org.chris.dao.DVDLibraryDaoFileImpl;
+import org.chris.dao.DvdLibraryAuditDao;
+import org.chris.dao.DvdLibraryAuditDaoFileImpl;
+import org.chris.dao.DvdLibraryDao;
+import org.chris.dao.DvdLibraryDaoFileImpl;
+import org.chris.service.DvdLibraryServiceLayer;
+import org.chris.service.DvdLibraryServiceLayerImpl;
 import org.chris.ui.DVDLibraryView;
 import org.chris.ui.UserIO;
 import org.chris.ui.UserIOConsoleImpl;
-import org.openjdk.jol.info.ClassLayout;
-import org.openjdk.jol.vm.VM;
-
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args)
     {
         UserIO myIo = new UserIOConsoleImpl();
         DVDLibraryView myView = new DVDLibraryView(myIo);
-        DVDLibraryDao myDao = new DVDLibraryDaoFileImpl();
-        DVDLibraryController controller = new DVDLibraryController(myDao, myView);
+        DvdLibraryDao myDao = new DvdLibraryDaoFileImpl();
+        DvdLibraryAuditDao myAuditDao = new DvdLibraryAuditDaoFileImpl();
+        DvdLibraryServiceLayer service = new DvdLibraryServiceLayerImpl(myDao, myAuditDao);
+        DVDLibraryController controller = new DVDLibraryController(service, myView);
         controller.run();
     }
 }

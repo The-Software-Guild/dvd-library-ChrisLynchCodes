@@ -1,8 +1,11 @@
 package org.chris.controller;
 
-import org.chris.dao.DVDLibraryDao;
-import org.chris.dao.DVDLibraryDaoException;
+import org.chris.dao.DvdLibraryDao;
+import org.chris.dao.DvdLibraryPersistenceException;
 import org.chris.dto.DVD;
+import org.chris.service.DvdLibraryDataValidationException;
+import org.chris.service.DvdLibraryDuplicateIdException;
+import org.chris.service.DvdLibraryServiceLayer;
 import org.chris.ui.DVDLibraryView;
 
 import java.util.List;
@@ -10,12 +13,13 @@ import java.util.List;
 public class DVDLibraryController {
 
     private final DVDLibraryView view;
-    private final DVDLibraryDao dao;
+    //    private final DvdLibraryDao dao;
+    private final DvdLibraryServiceLayer service;
 
-    public DVDLibraryController(DVDLibraryDao dao, DVDLibraryView view)
+    public DVDLibraryController(DvdLibraryServiceLayer service, DVDLibraryView view)
     {
         this.view = view;
-        this.dao = dao;
+        this.service = service;
     }
 
     public void run()
@@ -42,7 +46,7 @@ public class DVDLibraryController {
 
             }
             exitMessage();
-        } catch (DVDLibraryDaoException e) {
+        } catch (DvdLibraryPersistenceException e) {
             view.displayErrorMessage(e.getMessage());
         }
 
@@ -52,61 +56,74 @@ public class DVDLibraryController {
     {
         view.displayUnknownCommandBanner();
     }
+
     private void exitMessage()
     {
         view.displayExitBanner();
     }
+
     private int getMenuSelection()
     {
         return view.printMenuAndGetSelection();
     }
 
-    private void searchDvd() throws DVDLibraryDaoException
+    private void searchDvd() throws DvdLibraryPersistenceException
     {
-        List<DVD> dvds = dao.searchDvdByTitle(view.getDvdIdTitle());
+        List<DVD> dvds = service.searchDvdByTitle(view.getDvdIdTitle());
         view.displayDvdList(dvds);
     }
 
-    private void editDvd()throws DVDLibraryDaoException
+    private void editDvd() throws DvdLibraryPersistenceException
     {
         view.displayEditDvdBanner();
         String dvdId = view.getDvdIdChoice();
-        DVD dvdToEdit = dao.getDvd(dvdId);
+        DVD dvdToEdit = service.getDvd(dvdId);
         DVD editedDvd = view.getEditDetails(dvdToEdit);
-        dao.updateDvd(dvdId, editedDvd);
+        service.updateDvd(dvdId, editedDvd);
         view.displayEditSuccessBanner();
 
     }
 
-    private void removeDvd() throws DVDLibraryDaoException
+    private void removeDvd() throws DvdLibraryPersistenceException
     {
         view.displayRemoveDvdBanner();
         String dvdId = view.getDvdIdChoice();
-        DVD removedDvd = dao.removeDvd(dvdId);
+        DVD removedDvd = service.removeDvd(dvdId);
         view.displayRemoveResult(removedDvd);
     }
 
-    private void viewDvd() throws DVDLibraryDaoException
+    private void viewDvd() throws DvdLibraryPersistenceException
     {
         view.displayDisplayDvdBanner();
         String dvdId = view.getDvdIdChoice();
-        DVD dvd = dao.getDvd(dvdId);
+        DVD dvd = service.getDvd(dvdId);
         view.displayDvd(dvd);
     }
 
-    private void listDvds() throws DVDLibraryDaoException
+    private void listDvds() throws DvdLibraryPersistenceException
     {
         view.displayDisplayAllBanner();
-        List<DVD> dvdList = dao.getAllDVDS();
+        List<DVD> dvdList = service.getAllDvds();
         view.displayDvdList(dvdList);
     }
 
-    private void createDvd() throws DVDLibraryDaoException
+    private void createDvd() throws DvdLibraryPersistenceException
     {
         view.displayCreateDvdBanner();
-        DVD newDvd = view.getNewDvdInfo();
-        dao.addDVD(newDvd.getDvdId(), newDvd);
-        view.displayCreateSuccessBanner();
+        boolean hasErrors = false;
+        do {
+            DVD newDvd = view.getNewDvdInfo();
+            try {
+                service.createDvd(newDvd);
+                view.displayCreateSuccessBanner();
+                hasErrors = false;
+            } catch (DvdLibraryDuplicateIdException | DvdLibraryDataValidationException e) {
+                hasErrors = true;
+                view.displayErrorMessage(e.getMessage());
+            }
+        } while (hasErrors);
+
+
     }
 
 }

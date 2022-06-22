@@ -34,7 +34,7 @@ public class DVDLibraryView {
         io.print("6. Remove a DVD");
         io.print("7. Exit");
 
-        return io.readInt("Please select from the above choices.", 1, 6);
+        return io.readInt("Please select from the above choices.", 1, 7);
     }
 
     public DVD getEditDetails(DVD dvd)
