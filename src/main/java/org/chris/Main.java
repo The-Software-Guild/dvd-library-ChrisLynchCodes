@@ -6,6 +6,10 @@ import org.chris.dao.DVDLibraryDaoFileImpl;
 import org.chris.ui.DVDLibraryView;
 import org.chris.ui.UserIO;
 import org.chris.ui.UserIOConsoleImpl;
+import org.openjdk.jol.info.ClassLayout;
+import org.openjdk.jol.vm.VM;
+
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args)
