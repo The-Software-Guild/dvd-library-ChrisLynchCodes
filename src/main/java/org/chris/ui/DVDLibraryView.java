@@ -14,6 +14,9 @@ public class DVDLibraryView {
         this.io = io;
     }
 
+    //TODO validate all input
+    //TODO Leave blank when editing a DVD to keep the same value
+
 
     public void displayErrorMessage(String errorMsg)
     {
@@ -27,10 +30,11 @@ public class DVDLibraryView {
         io.print("Main Menu");
         io.print("1. List DVDS");
         io.print("2. Add DVD to library");
-        io.print("3. View a specific DVD");
-        io.print("4. Edit a DVD");
-        io.print("5. Remove a DVD");
-        io.print("6. Exit");
+        io.print("3. View a specific DVD by Id");
+        io.print("4. View a specific DVD by Title");
+        io.print("5. Edit a DVD");
+        io.print("6. Remove a DVD");
+        io.print("7. Exit");
 
         return io.readInt("Please select from the above choices.", 1, 6);
     }
@@ -38,10 +42,17 @@ public class DVDLibraryView {
     public DVD getEditDetails(DVD dvd)
     {
         dvd.setTitle(io.readString("Please enter new DVD title"));
+        dvd.setReleaseDate(io.readString("Please enter new DVD release date"));
         dvd.setMpaaRating(io.readString("Please enter new MPAA Rating"));
         dvd.setDirectorsName(io.readString("Please enter new directors name"));
         dvd.setStudio(io.readString("Please enter new studio name"));
         dvd.setUserRating(io.readString("Please enter new user rating"));
+        List<Actor> actors = dvd.getActors();
+        actors.clear();
+        String[] actorTokens = io.readString("Please enter new actors. Split by ','").split(",");
+        for (String actor : actorTokens) {
+            actors.add(new Actor(actor));
+        }
         return dvd;
 
     }
@@ -73,7 +84,7 @@ public class DVDLibraryView {
         for (DVD currentDvd : dvdList) {
 
             //using string.format
-             String initialDvdInfo = String.format("ID-%s%nTitle:%s - Release Date:%s - Rating:%s\nDirector:%s - Studio:%s - User Rating:%s%nActors:",
+            String initialDvdInfo = String.format("\nID-%s%nTitle:%s - Release Date:%s - Rating:%s\nDirector:%s - Studio:%s - User Rating:%s%nActors:",
                     currentDvd.getDvdId(),
                     currentDvd.getTitle(),
                     currentDvd.getReleaseDate(),
@@ -99,13 +110,29 @@ public class DVDLibraryView {
     {
         return io.readString("Please enter the dvd ID.");
     }
+    public String getDvdIdTitle()
+    {
+        return io.readString("Please enter the dvd Title.");
+    }
 
     public void displayDvd(DVD dvd)
     {
         if (dvd != null) {
-            io.print(dvd.getDvdId());
-            io.print(dvd.getTitle() + " " + dvd.getDirectorsName());
-            io.print(dvd.getReleaseDate());
+            io.print(String.format("\nID-%s%nTitle:%s - Release Date:%s - Rating:%s\nDirector:%s - Studio:%s - User Rating:%s",
+                    dvd.getDvdId(),
+                    dvd.getTitle(),
+                    dvd.getReleaseDate(),
+                    dvd.getMpaaRating(),
+                    dvd.getDirectorsName(),
+                    dvd.getStudio(),
+                    dvd.getUserRating()));
+
+
+            List<Actor> actors = dvd.getActors();
+            for (int i = 0; i < actors.size(); i++) {
+                Actor actor = actors.get(i);
+                io.print("Actor " + (i + 1) + " " + actor.getName());
+            }
             io.print("");
         } else {
             io.print("No such dvd.");

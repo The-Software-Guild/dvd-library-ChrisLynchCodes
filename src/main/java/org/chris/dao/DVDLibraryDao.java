@@ -37,6 +37,15 @@ public interface DVDLibraryDao {
     DVD getDvd(String dvdId)throws DVDLibraryDaoException;
 
     /**
+     * Returns the dvd object associated with the given dvd title.
+     * Returns null if no such dvd exists
+     *
+     * @param title title of the dvd to retrieve
+     * @return the dvd object associated with the given dvd title,
+     * null if no such dvd exists
+     */
+    List<DVD> searchDvdByTitle(String title)throws DVDLibraryDaoException;
+    /**
      * Removes from the library the dvd associated with the given id.
      * Returns the dvd object that is being removed or null if
      * there is no dvd associated with the given id

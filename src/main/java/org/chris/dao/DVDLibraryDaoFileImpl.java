@@ -5,6 +5,7 @@ import org.chris.dto.DVD;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
 
@@ -137,14 +138,10 @@ public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
         dvdFromFile.setUserRating(dvdTokens[6]);
 
         //actors
-        if (dvdTokens.length > 7) {
-            String[] actorTokens = dvdTokens[7].split(",");
-            for (String actor : actorTokens) {
-                dvdFromFile.getActors().add(new Actor(actor));
-            }
-
+        String[] actorTokens = dvdTokens[7].split(",");
+        for (String actor : actorTokens) {
+            dvdFromFile.getActors().add(new Actor(actor));
         }
-
 
         return dvdFromFile;
     }
@@ -170,6 +167,15 @@ public class DVDLibraryDaoFileImpl implements DVDLibraryDao {
     {
         loadLibrary();
         return dvds.get(dvdId);
+    }
+
+    @Override
+    public List<DVD> searchDvdByTitle(String title) throws DVDLibraryDaoException
+    {
+        loadLibrary();
+        return dvds.values().stream()
+                .filter(dvd -> dvd.getTitle().equals(title))
+                .collect(Collectors.toList());
     }
 
     @Override

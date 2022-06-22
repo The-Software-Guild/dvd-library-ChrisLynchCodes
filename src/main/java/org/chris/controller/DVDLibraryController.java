@@ -33,9 +33,10 @@ public class DVDLibraryController {
                     case 1 -> listDvds();
                     case 2 -> createDvd();
                     case 3 -> viewDvd();
-                    case 4 -> editDvd();
-                    case 5 -> removeDvd();
-                    case 6 -> keepGoing = false;
+                    case 4 -> searchDvd();
+                    case 5 -> editDvd();
+                    case 6 -> removeDvd();
+                    case 7 -> keepGoing = false;
                     default -> unknownCommand();
                 }
 
@@ -47,6 +48,25 @@ public class DVDLibraryController {
 
     }
 
+    private void unknownCommand()
+    {
+        view.displayUnknownCommandBanner();
+    }
+    private void exitMessage()
+    {
+        view.displayExitBanner();
+    }
+    private int getMenuSelection()
+    {
+        return view.printMenuAndGetSelection();
+    }
+
+
+    private void searchDvd() throws DVDLibraryDaoException
+    {
+        List<DVD> dvds = dao.searchDvdByTitle(view.getDvdIdTitle());
+        view.displayDvdList(dvds);
+    }
     private void editDvd()throws DVDLibraryDaoException
     {
         view.displayEditDvdBanner();
@@ -57,18 +77,6 @@ public class DVDLibraryController {
         view.displayEditSuccessBanner();
 
     }
-
-
-    private void unknownCommand()
-    {
-        view.displayUnknownCommandBanner();
-    }
-
-    private void exitMessage()
-    {
-        view.displayExitBanner();
-    }
-
 
     private void removeDvd() throws DVDLibraryDaoException
     {
@@ -87,10 +95,6 @@ public class DVDLibraryController {
         view.displayDvd(dvd);
     }
 
-    private int getMenuSelection()
-    {
-        return view.printMenuAndGetSelection();
-    }
 
     private void listDvds() throws DVDLibraryDaoException
     {
