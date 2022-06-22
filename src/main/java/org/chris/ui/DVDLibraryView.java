@@ -14,9 +14,7 @@ public class DVDLibraryView {
         this.io = io;
     }
 
-    //TODO validate all input
-    //TODO Leave blank when editing a DVD to keep the same value
-    //TODO JAVA DOC Comments
+
 
     public void displayErrorMessage(String errorMsg)
     {
