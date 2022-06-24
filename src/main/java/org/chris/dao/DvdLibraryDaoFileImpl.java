@@ -10,8 +10,20 @@ import java.util.stream.Collectors;
 public class DvdLibraryDaoFileImpl implements DvdLibraryDao {
 
     private final Map<String, DVD> dvds = new HashMap<>();
-    public static final String DVD_LIBRARY_FILE = "dvdlibrary.txt";
-    public static final String DELIMITER = "::";
+    private final String DVD_LIBRARY_FILE;
+    private static final String DELIMITER = "::";
+
+    public DvdLibraryDaoFileImpl()
+    {
+        DVD_LIBRARY_FILE = "dvdLibrary.txt";
+
+    }
+
+    public DvdLibraryDaoFileImpl(String dvdLibraryTextFile)
+    {
+        DVD_LIBRARY_FILE = dvdLibraryTextFile;
+
+    }
 
     private void writeLibrary() throws DvdLibraryPersistenceException
     {

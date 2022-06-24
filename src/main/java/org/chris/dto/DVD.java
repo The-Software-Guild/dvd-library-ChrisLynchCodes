@@ -2,6 +2,7 @@ package org.chris.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DVD {
 
@@ -24,8 +25,35 @@ public class DVD {
         actors = new ArrayList<>();
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final DVD dvd = (DVD) o;
+        return dvdId.equals(dvd.dvdId) && title.equals(dvd.title) && releaseDate.equals(dvd.releaseDate) && mpaaRating.equals(dvd.mpaaRating) && directorsName.equals(dvd.directorsName) && studio.equals(dvd.studio) && userRating.equals(dvd.userRating) && actors.equals(dvd.actors);
+    }
 
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(dvdId, title, releaseDate, mpaaRating, directorsName, studio, userRating, actors);
+    }
 
+    @Override
+    public String toString()
+    {
+        return "DVD{" +
+                "dvdId='" + dvdId + '\'' +
+                ", title='" + title + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", mpaaRating='" + mpaaRating + '\'' +
+                ", directorsName='" + directorsName + '\'' +
+                ", studio='" + studio + '\'' +
+                ", userRating='" + userRating + '\'' +
+                ", actors=" + actors +
+                '}';
+    }
 
     public List<Actor> getActors()
     {
